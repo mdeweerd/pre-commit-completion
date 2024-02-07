@@ -65,7 +65,7 @@ _pre_commit_completion() {
 
 
     local color_options="auto always never"
-    local stages="commit-msg post-checkout post-commit post-merge post-rewrite pre-commit pre-merge-commit pre-push pre-rebase prepare-commit-msg"
+    local stages="commit-msg post-checkout post-commit post-merge post-rewrite pre-commit pre-merge-commit pre-push pre-rebase prepare-commit-msg manual"
     local options
     case "${prev}" in
         --color)
