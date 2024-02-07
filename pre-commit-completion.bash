@@ -61,20 +61,78 @@ _pre_commit_completion() {
     fi
 
 
+    local color_options="auto always never"
+    local stages="commit-msg post-checkout post-commit post-merge post-rewrite pre-commit pre-merge-commit pre-push pre-rebase prepare-commit-msg"
+    local options
+    case "${prev}" in
+        --color)
+            options="${color_options}"
+            ;;
+        --config|-c)
+            config_files=$(git ls-files ":${cur}*" 2>/dev/null)
+            options="${config_files}"
+            ;;
+        -t|--hook-type|--hook-stage)
+            options="${stages}"
+            ;;
+        --remote-branch)
+            options="$(git branch -r --format "%(refname:lstrip=2)")"
+            ;;
+        --local-branch)
+            options="$(git branch -l --format "%(refname:lstrip=2)")"
+            ;;
+        --ref|--from-ref|--source|-s|--to-ref|--origin|-o)
+            # User must provide option
+            return 0
+            ;;
+        --pre-rebase-upstream)
+            options="$(git remote)"
+            ;;
+        --pre-rebase-branch)
+            options="$(git branch -l --format "%(refname:lstrip=2)")"
+            ;;
+        --hook-dir)
+            COMPREPLY=( $(compgen -d -- "${cur}") )
+            return 0
+            ;;
+        --commit-msg-filename)
+            COMPREPLY=( $(compgen -f -- "${cur}") )
+            return 0
+            ;;
+        --commit-object-name)
+            return 0
+            ;;
+        --remote-name|--remote-url)
+            return 0
+            ;;
+        --checkout-type|--is-squash-merge)
+            options="0 1"
+            ;;
+        --rewrite-command)
+            return 0
+            ;;
+    esac
+
+    if [ "${options}" != "" ] ; then
+        COMPREPLY=( $(compgen -W "${options}" -- "${cur}") )
+        return 0
+    fi
+
     local autoupdate_options="--help --color -c --bleeding-edge --freeze -repo -j"
-    local clean_options="--help"
-    local gc_options="--help"
-    local install_options="--help --hook-type"
-    local install_hooks_options="--help"
-    local migrate_config_options="--help"
+    local clean_options="--help --color"
+    local gc_options="--help --color"
+    local install_options="--help --hook-type --color -c --config -f --overwrite --install-hooks --allow-missing-config -t --hook-type"
+    local install_hooks_options="--help --color -c --config"
+    local migrate_config_options="--help --color -c --config"
     local run_options="--color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help"
-    local sample_config_options="--help"
-    local try_repo_options="--help"
-    local uninstall_options="--help"
-    local validate_config_options="--help"
-    local validate_manifest_options="--help"
-    local help_options="--help"
-    local hook_impl_options="--help"
+    local sample_config_options="--help --color"
+    local try_repo_options="--ref --color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help"
+    local uninstall_options="--help --color -c --config -t --hook-type"
+    local validate_config_options="--help --color"
+    local validate_manifest_options="--help --color"
+    local help_options="--help $commands"
+    local hook_impl_options="--help --color -c --config --hook-type --hook-dir --skip-on-missing-config"
+
 
     local command_opts
     case "${cmd_arg}" in
@@ -128,9 +186,9 @@ _pre_commit_completion() {
 
 
     case "${cmd_arg}" in
-        run)
+        try-repo|run)
             # Check for --files or hooks in the preceding arguments
-            local hooks prev_arg exclude_git propose_files repo_files hooksError
+            local hooks prev_arg exclude_git propose_files repo_files hooksError has_repo
             hooks=$(_find_hooks)
             hooksError=$?
             hooks_spaces=$(echo "$hooks" | tr '\n' ' ')
@@ -150,6 +208,9 @@ _pre_commit_completion() {
 
                 elif [[ "${prev_arg}" == "--files" ]]; then
                     propose_files=1
+                elif [[ "${prev_arg}" == *":"* ]]; then
+                    # Might be a link, suppose repo is provided
+                    has_repo=1
                 fi
             done
 
@@ -157,6 +218,10 @@ _pre_commit_completion() {
                 # Completion for files in the repository
                 repo_files=$(git ls-files ":${cur}*" "${exclude_git[@]}" 2>/dev/null)
                 COMPREPLY=( $(compgen -W "${repo_files}" -- "${cur}") )
+                return 0
+            fi
+
+            if [ "${cmd_arg}" == "try-repo" ] && [ "${has_repo}" != "1" ] ; then
                 return 0
             fi
 
@@ -168,7 +233,7 @@ _pre_commit_completion() {
 
             return 0
             ;;
-        autoupdate|clean|gc|install|install-hooks|migrate-config|sample-config|try-repo|uninstall|validate-config|validate-manifest|help|hook-impl)
+        autoupdate|clean|gc|migrate-config|sample-config|try-repo|uninstall|help|hook-impl)
             COMPREPLY=( $(compgen -W "${command_opts}" -- "${cur}") )
             return 0
             ;;
@@ -176,6 +241,17 @@ _pre_commit_completion() {
             local hooks
             hooks=$(_find_hooks)
             COMPREPLY=( $(compgen -W "${hooks}" -- "${cur}") )
+            return 0
+            ;;
+        validate-config|validate-manifest)
+            local options_filtered=""
+            local _args=" ${words[*]} "
+            for o in $command_opts ; do
+                if [[ "$_args" != *" $o "* ]] ; then
+                    options_filtered="$options_filtered $o"
+                fi
+            done
+            COMPREPLY=( $(compgen -W "$(compgen -f -- "${cur}") $options_filtered") )  # Generate filenames and options
             return 0
             ;;
     esac
