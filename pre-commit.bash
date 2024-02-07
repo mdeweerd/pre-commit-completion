@@ -262,26 +262,93 @@ _pre_commit_completion() {
     esac
 }
 
+function _pre_commit_comma_list() {
+    # Allow building list of options with separator (provided to attempt SKIP completion)
+    local cur sep list
+
+    cur="$1" ; shift
+    sep="$1" ; shift
+    list=("$@")
+
+    sep=${sep:=,}  # Default separator
+
+    if [[ "$cur" == *"${sep}"* ]]; then
+        # Already has an element
+
+        # for internals
+        local lastitem prefix chosen remaining
+
+        lastitem="${cur##*"${sep}"}"
+        prefix="${cur%"${sep}"*}"
+        chosen=()
+        IFS="${sep}" read -ra chosen <<< "$prefix"
+
+        remaining=()
+
+        readarray -t remaining <<< "$(printf '%s\n' "${list[@]}" "${chosen[@]}" | sort | uniq -u)"
+
+        if [[ ${#remaining[@]} -gt 0 ]]; then
+            readarray -t COMPREPLY <<< "$(compgen -W "${remaining[*]}" -P "${prefix}${sep}" -- "$lastitem")"
+            #echo "\n'$cur' HERE ${list[@]} COMP ${COMPREPLY[@]} ENDHERE\n"
+
+            # add separator if user tabs again after entering a complete name
+            if [ "$lastitem" != '' ] && [[ ${#COMPREPLY[@]} -eq 1 ]] && [ "${prefix}${sep}$lastitem" == "${COMPREPLY[0]}" ]; then
+                # Exactly one remaining match corresponding to our last item
+                COMPREPLY=("${COMPREPLY[0]}${sep}")
+            fi
+
+            if [[ ${#remaining[@]} -gt 1 ]]; then
+                compopt -o nospace
+            fi
+        fi
+    else
+        # First item
+        #COMPREPLY=($(compgen -W "${list[*]}" -- "$cur"))
+        readarray -t COMPREPLY <<< "$(compgen -W "${list[*]}" -- "$cur")"
+        if [ "$cur" != "" ] && [[ ${#COMPREPLY[@]} -eq 1 ]] && [ "$cur" = "${COMPREPLY[0]}" ]; then
+            # Exactly one remaining match corresponding to our last item
+            COMPREPLY=("${COMPREPLY[0]}${sep}")
+        fi
+        compopt -o nospace
+    fi
+}
+
+if [ "0" == "$TERM" ] ; then
+    # Example usage with dummy command and abc,def,ghf options
+    function _dummy_bash() {
+        # shellcheck disable=2034
+        local cur prev words cword
+
+        _init_completion || return
+
+        option_list=("abc" "def" "ghf")
+        _pre_commit_comma_list "${cur}" "," "${option_list[@]}"
+    }
+    complete -F _dummy_bash dummy
+fi
+
+
 # Define a completion function for the SKIP environment variable
 _SKIP_completion() {
     # work in progress
 
+    # shellcheck disable=2034
+    local cur prev words cword
+
+    _init_completion || return
+
     # Get the list of hooks from the configuration file
     local hooks
+    local IFS=$' \t\n'
 
     hooks=$(_find_hooks)
-
-    # Split the SKIP value into an array of skipped hooks
-    IFS=',' read -r -a skip_hooks <<< "${COMP_WORDS[COMP_CWORD]#SKIP=}"
-
-    # Filter out the already skipped hooks
-    local remaining_hooks
-    remaining_hooks=$(comm -23 <(echo "${hooks}" | tr '\n' ' ' | sort) <(echo "${skip_hooks[@]}" | tr ' ' '\n' | sort))
-
-    # Set completion options to remaining hooks
-    COMPREPLY=( $(compgen -W "${remaining_hooks}" -- "${COMP_WORDS[COMP_CWORD]}") )
+    #readarray -t hooks <<< "$(compgen -W "$(_find_hooks)" -- "")"
+    hooks=($(compgen -W "$(_find_hooks)" -- ""))
+    # for i in "${hooks[@]}" ; do echo ":$i:" ; done
+    _pre_commit_comma_list "${cur}" "," "${hooks[@]}"
 }
 
 # Set up completion for the SKIP environment variable (not functional)
-# complete -F _SKIP_completion "SKIP="
+# Currently matches SKIP<SPACE><TAB> - Should match SKIP=<TAB>
+complete -F _SKIP_completion "SKIP"
 complete -F _pre_commit_completion pre-commit
