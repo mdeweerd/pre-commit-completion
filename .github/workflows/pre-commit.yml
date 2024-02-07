@@ -24,7 +24,8 @@ jobs:
           path: |
             ~/.cache/pre-commit/
             bash_unit
-          key: pre-commit-4|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml')
+          key:
+            pre-commit-4|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml')
             }}
       - name: Run pre-commit hooks
         env:
@@ -47,7 +48,8 @@ jobs:
           path: |
             ~/.cache/pre-commit/
             bash_unit
-          key: pre-commit-4|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml')
+          key:
+            pre-commit-4|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml')
             }}
       - name: Provide log as artifact
         uses: actions/upload-artifact@v4
