@@ -30,7 +30,7 @@ _pre_commit_completion() {
 
         if [ -n "${config_file}" ]; then
             quotes="\"'"  # To avoid beautysh incompatibility
-            hooks=$(grep -E '^\s+(-\s+)?(alias|id):\s+[^ ]+' "${config_file}" | sed -E 's/^\s+(-\s+)?\S+:\s+'"[$quotes]?([^$quotes] ]+)"'/\2/')
+            hooks=$(grep -E '^\s+(-\s+)?(alias|id):\s+[^ ]+' "${config_file}" | sed -E 's/^\s+(-\s+)?\S+:\s+'"[$quotes]?([^$quotes: ]+)"'/\2/')
         else
             hooks=""
         fi
