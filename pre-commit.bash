@@ -127,7 +127,7 @@ _pre_commit_completion() {
     local install_options="--help --hook-type --color -c --config -f --overwrite --install-hooks --allow-missing-config -t --hook-type"
     local install_hooks_options="--help --color -c --config"
     local migrate_config_options="--help --color -c --config"
-    local run_options="--color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help"
+    local run_options="--color --config -v --verbose --files -a --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help"
     local sample_config_options="--help --color"
     local try_repo_options="--ref --color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help"
     local uninstall_options="--help --color -c --config -t --hook-type"
@@ -254,9 +254,34 @@ _pre_commit_completion() {
                     options_filtered="$options_filtered $o"
                 fi
             done
-            COMPREPLY=( $(compgen -W "$(compgen -f -- "${cur}") $options_filtered") )  # Generate filenames and options
+            # Generate filenames
+            COMPREPLY=( $(compgen -f -- "${cur}") )
+            COMPREPLY+=( $(compgen -W "$options_filtered" -- "${cur}") )  # add options
             return 0
             ;;
     esac
 }
+
+# Define a completion function for the SKIP environment variable
+_SKIP_completion() {
+    # work in progress
+
+    # Get the list of hooks from the configuration file
+    local hooks
+
+    hooks=$(_find_hooks)
+
+    # Split the SKIP value into an array of skipped hooks
+    IFS=',' read -r -a skip_hooks <<< "${COMP_WORDS[COMP_CWORD]#SKIP=}"
+
+    # Filter out the already skipped hooks
+    local remaining_hooks
+    remaining_hooks=$(comm -23 <(echo "${hooks}" | tr '\n' ' ' | sort) <(echo "${skip_hooks[@]}" | tr ' ' '\n' | sort))
+
+    # Set completion options to remaining hooks
+    COMPREPLY=( $(compgen -W "${remaining_hooks}" -- "${COMP_WORDS[COMP_CWORD]}") )
+}
+
+# Set up completion for the SKIP environment variable (not functional)
+# complete -F _SKIP_completion "SKIP="
 complete -F _pre_commit_completion pre-commit

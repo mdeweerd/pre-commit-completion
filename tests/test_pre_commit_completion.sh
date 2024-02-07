@@ -4,8 +4,8 @@
 
 
 # Source the completion script for testing
-# # shellcheck source=../pre-commit-completion.bash
-source "$(realpath "$(dirname "$0")/../pre-commit-completion.bash")"
+# # shellcheck source=../pre-commit.bash
+source "$(realpath "$(dirname "$0")/../pre-commit.bash")"
 
 _init_completion() {
     COMPREPLY=()
@@ -21,13 +21,13 @@ test_pre_commit_run_completion() {
     COMP_CWORD=3
     _pre_commit_completion
     #echo "${COMPREPLY[@]}"
-    assert_equals "--color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help" "${COMPREPLY[*]}" "TEST1"
+    assert_equals "--color --config -v --verbose --files -a --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help" "${COMPREPLY[*]}" "TEST1"
 
     # Test completion after "pre-commit run --"
     COMP_WORDS=("pre-commit" "run" "--")
     COMP_CWORD=3
     _pre_commit_completion
-    assert_matches "--color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help no-commit-to-branch check-yaml check-json mixed-line-ending trailing-whitespace end-of-file-fixer check-merge-conflict check-executables-have-shebangs check-shebang-scripts-are-executable fix-byte-order-marker check-case-conflict beautysh local-precommit-script prettier yamllint codespell shellcheck" "${COMPREPLY[*]}" "TEST2"
+    assert_matches "--color --config -v --verbose --files -a --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help no-commit-to-branch check-yaml check-json mixed-line-ending trailing-whitespace end-of-file-fixer check-merge-conflict check-executables-have-shebangs check-shebang-scripts-are-executable fix-byte-order-marker check-case-conflict beautysh local-precommit-script prettier yamllint codespell shellcheck tests" "${COMPREPLY[*]}" "TEST2"
     # Add more assertions for other run options
 }
 
