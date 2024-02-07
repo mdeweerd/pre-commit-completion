@@ -69,3 +69,12 @@ repos:
     hooks:
       - id: shellcheck
         args: [-W, '100']
+
+  # Run tests
+  - repo: local
+    hooks:
+      - id: tests
+        name: Run tests
+        language: system
+        entry: ./run-tests.sh
+        pass_filenames: false

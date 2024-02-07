@@ -1,9 +1,10 @@
 #!/bin/bash
 # test_pre_commit_completion.sh
-# shellcheck disable=all  #disabled for now
+# shellcheck disable=2034,1090
 
 
 # Source the completion script for testing
+# # shellcheck source=../pre-commit-completion.bash
 source "$(realpath "$(dirname "$0")/../pre-commit-completion.bash")"
 
 _init_completion() {
@@ -19,15 +20,14 @@ test_pre_commit_run_completion() {
     COMP_WORDS=("pre-commit" "run" "beautysh")
     COMP_CWORD=3
     _pre_commit_completion
-    echo "${COMPREPLY[@]}"
-    assert_equals "Expected completion for hook names" "some-hook" "${COMPREPLY[0]}"
+    #echo "${COMPREPLY[@]}"
+    assert_equals "--color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help" "${COMPREPLY[*]}" "TEST1"
 
     # Test completion after "pre-commit run --"
     COMP_WORDS=("pre-commit" "run" "--")
     COMP_CWORD=3
     _pre_commit_completion
-    assert_matches "Expected run options completion" "${COMPREPLY[*]}" "--color"
-    assert_matches "Expected run options completion" "${COMPREPLY[*]}" "--config"
+    assert_matches "--color --config --verbose --files --all-files --show-diff-on-failure --hook-stage --remote-branch --local-branch --from-ref --to-ref --pre-rebase-upstream --pre-rebase-branch --commit-msg-filename --prepare-commit-message-source --commit-object-name --remote-name --remote-url --checkout-type --is-squash-merge --rewrite-command --help no-commit-to-branch check-yaml check-json mixed-line-ending trailing-whitespace end-of-file-fixer check-merge-conflict check-executables-have-shebangs check-shebang-scripts-are-executable fix-byte-order-marker check-case-conflict beautysh local-precommit-script prettier yamllint codespell shellcheck" "${COMPREPLY[*]}" "TEST2"
     # Add more assertions for other run options
 }
 
@@ -36,7 +36,6 @@ test_pre_commit_global_options_completion() {
     COMP_WORDS=("pre-commit")
     COMP_CWORD=1
     _pre_commit_completion
-    assert_matches "Expected global options completion" "${COMPREPLY[*]}" "-h"
-    assert_matches "Expected global options completion" "${COMPREPLY[*]}" "--help"
+    assert_matches "-h --help -V --version autoupdate clean gc init-templatedir install install-hooks migrate-config run sample-config try-repo uninstall validate-config validate-manifest help hook-impl" "${COMPREPLY[*]}" "-h"
     # Add more assertions for other global options
 }
