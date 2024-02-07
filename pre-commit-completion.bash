@@ -1,7 +1,10 @@
-# pre-commit completion script
-# shellcheck disable=all  # disable for now
+# pre-commit bash-completion script
+# Source https://github.com/mdeweerd/pre-commit-completion
+# shellcheck shell=bash
+# shellcheck disable=2207,2181
 
 _pre_commit_completion() {
+    # shellcheck disable=2034
     local cur prev prev2 words cword
 
     _init_completion || return
@@ -233,7 +236,7 @@ _pre_commit_completion() {
 
             return 0
             ;;
-        autoupdate|clean|gc|migrate-config|sample-config|try-repo|uninstall|help|hook-impl)
+        autoupdate|clean|gc|migrate-config|sample-config|help|hook-impl)
             COMPREPLY=( $(compgen -W "${command_opts}" -- "${cur}") )
             return 0
             ;;
