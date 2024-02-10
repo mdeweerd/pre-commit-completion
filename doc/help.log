@@ -1,0 +1,407 @@
+########### PRE-COMMIT
+usage: pre-commit run [-h] [--color {auto,always,never}] [-c CONFIG]
+                      [--verbose] [--all-files | --files [FILES ...]]
+                      [--show-diff-on-failure]
+                      [--hook-stage {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg,manual}]
+                      [--remote-branch REMOTE_BRANCH]
+                      [--local-branch LOCAL_BRANCH] [--from-ref FROM_REF]
+                      [--to-ref TO_REF]
+                      [--pre-rebase-upstream PRE_REBASE_UPSTREAM]
+                      [--pre-rebase-branch PRE_REBASE_BRANCH]
+                      [--commit-msg-filename COMMIT_MSG_FILENAME]
+                      [--prepare-commit-message-source PREPARE_COMMIT_MESSAGE_SOURCE]
+                      [--commit-object-name COMMIT_OBJECT_NAME]
+                      [--remote-name REMOTE_NAME] [--remote-url REMOTE_URL]
+                      [--checkout-type CHECKOUT_TYPE]
+                      [--is-squash-merge IS_SQUASH_MERGE]
+                      [--rewrite-command REWRITE_COMMAND]
+                      [hook]
+
+positional arguments:
+  hook                  A single hook-id to run
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  --verbose, -v
+  --all-files, -a       Run on all the files in the repo.
+  --files [FILES ...]   Specific filenames to run hooks on.
+  --show-diff-on-failure
+                        When hooks fail, run `git diff` directly afterward.
+  --hook-stage {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg,manual}
+                        The stage during which the hook is fired. One of
+                        commit-msg, post-checkout, post-commit, post-merge,
+                        post-rewrite, pre-commit, pre-merge-commit, pre-push,
+                        pre-rebase, prepare-commit-msg, manual
+  --remote-branch REMOTE_BRANCH
+                        Remote branch ref used by `git push`.
+  --local-branch LOCAL_BRANCH
+                        Local branch ref used by `git push`.
+  --from-ref FROM_REF, --source FROM_REF, -s FROM_REF
+                        (for usage with `--to-ref`) -- this option represents
+                        the original ref in a `from_ref...to_ref` diff
+                        expression. For `pre-push` hooks, this represents the
+                        branch you are pushing to. For `post-checkout` hooks,
+                        this represents the branch that was previously checked
+                        out.
+  --to-ref TO_REF, --origin TO_REF, -o TO_REF
+                        (for usage with `--from-ref`) -- this option
+                        represents the destination ref in a
+                        `from_ref...to_ref` diff expression. For `pre-push`
+                        hooks, this represents the branch being pushed. For
+                        `post-checkout` hooks, this represents the branch that
+                        is now checked out.
+  --pre-rebase-upstream PRE_REBASE_UPSTREAM
+                        The upstream from which the series was forked.
+  --pre-rebase-branch PRE_REBASE_BRANCH
+                        The branch being rebased, and is not set when rebasing
+                        the current branch.
+  --commit-msg-filename COMMIT_MSG_FILENAME
+                        Filename to check when running during `commit-msg`
+  --prepare-commit-message-source PREPARE_COMMIT_MESSAGE_SOURCE
+                        Source of the commit message (typically the second
+                        argument to .git/hooks/prepare-commit-msg)
+  --commit-object-name COMMIT_OBJECT_NAME
+                        Commit object name (typically the third argument to
+                        .git/hooks/prepare-commit-msg)
+  --remote-name REMOTE_NAME
+                        Remote name used by `git push`.
+  --remote-url REMOTE_URL
+                        Remote url used by `git push`.
+  --checkout-type CHECKOUT_TYPE
+                        Indicates whether the checkout was a branch checkout
+                        (changing branches, flag=1) or a file checkout
+                        (retrieving a file from the index, flag=0).
+  --is-squash-merge IS_SQUASH_MERGE
+                        During a post-merge hook, indicates whether the merge
+                        was a squash merge
+  --rewrite-command REWRITE_COMMAND
+                        During a post-rewrite hook, specifies the command that
+                        invoked the rewrite
+########### autoupdate
+usage: pre-commit autoupdate [-h] [--color {auto,always,never}] [-c CONFIG]
+                             [--bleeding-edge] [--freeze] [--repo REPO]
+                             [-j JOBS]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  --bleeding-edge       Update to the bleeding edge of `HEAD` instead of the
+                        latest tagged version (the default behavior).
+  --freeze              Store "frozen" hashes in `rev` instead of tag names
+  --repo REPO           Only update this repository -- may be specified
+                        multiple times.
+  -j JOBS, --jobs JOBS  Number of threads to use. (default 1).
+########### clean
+usage: pre-commit clean [-h] [--color {auto,always,never}]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+########### gc
+usage: pre-commit gc [-h] [--color {auto,always,never}]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+########### init-templatedir
+usage: pre-commit init-templatedir [-h] [--color {auto,always,never}]
+                                   [-c CONFIG] [--no-allow-missing-config]
+                                   [-t {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}]
+                                   directory
+
+positional arguments:
+  directory             The directory in which to write the hook script.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  --no-allow-missing-config
+                        Assume cloned repos should have a `pre-commit` config.
+  -t {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}, --hook-type {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}
+########### install
+usage: pre-commit install [-h] [--color {auto,always,never}] [-c CONFIG] [-f]
+                          [--install-hooks]
+                          [-t {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}]
+                          [--allow-missing-config]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  -f, --overwrite       Overwrite existing hooks / remove migration mode.
+  --install-hooks       Whether to install hook environments for all
+                        environments in the config file.
+  -t {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}, --hook-type {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}
+  --allow-missing-config
+                        Whether to allow a missing `pre-commit` configuration
+                        file or exit with a failure code.
+########### install-hooks
+usage: pre-commit install-hooks [-h] [--color {auto,always,never}] [-c CONFIG]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+########### migrate-config
+usage: pre-commit migrate-config [-h] [--color {auto,always,never}]
+                                 [-c CONFIG]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+########### run
+usage: pre-commit run [-h] [--color {auto,always,never}] [-c CONFIG]
+                      [--verbose] [--all-files | --files [FILES ...]]
+                      [--show-diff-on-failure]
+                      [--hook-stage {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg,manual}]
+                      [--remote-branch REMOTE_BRANCH]
+                      [--local-branch LOCAL_BRANCH] [--from-ref FROM_REF]
+                      [--to-ref TO_REF]
+                      [--pre-rebase-upstream PRE_REBASE_UPSTREAM]
+                      [--pre-rebase-branch PRE_REBASE_BRANCH]
+                      [--commit-msg-filename COMMIT_MSG_FILENAME]
+                      [--prepare-commit-message-source PREPARE_COMMIT_MESSAGE_SOURCE]
+                      [--commit-object-name COMMIT_OBJECT_NAME]
+                      [--remote-name REMOTE_NAME] [--remote-url REMOTE_URL]
+                      [--checkout-type CHECKOUT_TYPE]
+                      [--is-squash-merge IS_SQUASH_MERGE]
+                      [--rewrite-command REWRITE_COMMAND]
+                      [hook]
+
+positional arguments:
+  hook                  A single hook-id to run
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  --verbose, -v
+  --all-files, -a       Run on all the files in the repo.
+  --files [FILES ...]   Specific filenames to run hooks on.
+  --show-diff-on-failure
+                        When hooks fail, run `git diff` directly afterward.
+  --hook-stage {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg,manual}
+                        The stage during which the hook is fired. One of
+                        commit-msg, post-checkout, post-commit, post-merge,
+                        post-rewrite, pre-commit, pre-merge-commit, pre-push,
+                        pre-rebase, prepare-commit-msg, manual
+  --remote-branch REMOTE_BRANCH
+                        Remote branch ref used by `git push`.
+  --local-branch LOCAL_BRANCH
+                        Local branch ref used by `git push`.
+  --from-ref FROM_REF, --source FROM_REF, -s FROM_REF
+                        (for usage with `--to-ref`) -- this option represents
+                        the original ref in a `from_ref...to_ref` diff
+                        expression. For `pre-push` hooks, this represents the
+                        branch you are pushing to. For `post-checkout` hooks,
+                        this represents the branch that was previously checked
+                        out.
+  --to-ref TO_REF, --origin TO_REF, -o TO_REF
+                        (for usage with `--from-ref`) -- this option
+                        represents the destination ref in a
+                        `from_ref...to_ref` diff expression. For `pre-push`
+                        hooks, this represents the branch being pushed. For
+                        `post-checkout` hooks, this represents the branch that
+                        is now checked out.
+  --pre-rebase-upstream PRE_REBASE_UPSTREAM
+                        The upstream from which the series was forked.
+  --pre-rebase-branch PRE_REBASE_BRANCH
+                        The branch being rebased, and is not set when rebasing
+                        the current branch.
+  --commit-msg-filename COMMIT_MSG_FILENAME
+                        Filename to check when running during `commit-msg`
+  --prepare-commit-message-source PREPARE_COMMIT_MESSAGE_SOURCE
+                        Source of the commit message (typically the second
+                        argument to .git/hooks/prepare-commit-msg)
+  --commit-object-name COMMIT_OBJECT_NAME
+                        Commit object name (typically the third argument to
+                        .git/hooks/prepare-commit-msg)
+  --remote-name REMOTE_NAME
+                        Remote name used by `git push`.
+  --remote-url REMOTE_URL
+                        Remote url used by `git push`.
+  --checkout-type CHECKOUT_TYPE
+                        Indicates whether the checkout was a branch checkout
+                        (changing branches, flag=1) or a file checkout
+                        (retrieving a file from the index, flag=0).
+  --is-squash-merge IS_SQUASH_MERGE
+                        During a post-merge hook, indicates whether the merge
+                        was a squash merge
+  --rewrite-command REWRITE_COMMAND
+                        During a post-rewrite hook, specifies the command that
+                        invoked the rewrite
+########### sample-config
+usage: pre-commit sample-config [-h] [--color {auto,always,never}]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+########### try-repo
+usage: pre-commit try-repo [-h] [--color {auto,always,never}] [-c CONFIG]
+                           [--ref REF] [--verbose]
+                           [--all-files | --files [FILES ...]]
+                           [--show-diff-on-failure]
+                           [--hook-stage {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg,manual}]
+                           [--remote-branch REMOTE_BRANCH]
+                           [--local-branch LOCAL_BRANCH] [--from-ref FROM_REF]
+                           [--to-ref TO_REF]
+                           [--pre-rebase-upstream PRE_REBASE_UPSTREAM]
+                           [--pre-rebase-branch PRE_REBASE_BRANCH]
+                           [--commit-msg-filename COMMIT_MSG_FILENAME]
+                           [--prepare-commit-message-source PREPARE_COMMIT_MESSAGE_SOURCE]
+                           [--commit-object-name COMMIT_OBJECT_NAME]
+                           [--remote-name REMOTE_NAME]
+                           [--remote-url REMOTE_URL]
+                           [--checkout-type CHECKOUT_TYPE]
+                           [--is-squash-merge IS_SQUASH_MERGE]
+                           [--rewrite-command REWRITE_COMMAND]
+                           repo [hook]
+
+positional arguments:
+  repo                  Repository to source hooks from.
+  hook                  A single hook-id to run
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  --ref REF, --rev REF  Manually select a rev to run against, otherwise the
+                        `HEAD` revision will be used.
+  --verbose, -v
+  --all-files, -a       Run on all the files in the repo.
+  --files [FILES ...]   Specific filenames to run hooks on.
+  --show-diff-on-failure
+                        When hooks fail, run `git diff` directly afterward.
+  --hook-stage {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg,manual}
+                        The stage during which the hook is fired. One of
+                        commit-msg, post-checkout, post-commit, post-merge,
+                        post-rewrite, pre-commit, pre-merge-commit, pre-push,
+                        pre-rebase, prepare-commit-msg, manual
+  --remote-branch REMOTE_BRANCH
+                        Remote branch ref used by `git push`.
+  --local-branch LOCAL_BRANCH
+                        Local branch ref used by `git push`.
+  --from-ref FROM_REF, --source FROM_REF, -s FROM_REF
+                        (for usage with `--to-ref`) -- this option represents
+                        the original ref in a `from_ref...to_ref` diff
+                        expression. For `pre-push` hooks, this represents the
+                        branch you are pushing to. For `post-checkout` hooks,
+                        this represents the branch that was previously checked
+                        out.
+  --to-ref TO_REF, --origin TO_REF, -o TO_REF
+                        (for usage with `--from-ref`) -- this option
+                        represents the destination ref in a
+                        `from_ref...to_ref` diff expression. For `pre-push`
+                        hooks, this represents the branch being pushed. For
+                        `post-checkout` hooks, this represents the branch that
+                        is now checked out.
+  --pre-rebase-upstream PRE_REBASE_UPSTREAM
+                        The upstream from which the series was forked.
+  --pre-rebase-branch PRE_REBASE_BRANCH
+                        The branch being rebased, and is not set when rebasing
+                        the current branch.
+  --commit-msg-filename COMMIT_MSG_FILENAME
+                        Filename to check when running during `commit-msg`
+  --prepare-commit-message-source PREPARE_COMMIT_MESSAGE_SOURCE
+                        Source of the commit message (typically the second
+                        argument to .git/hooks/prepare-commit-msg)
+  --commit-object-name COMMIT_OBJECT_NAME
+                        Commit object name (typically the third argument to
+                        .git/hooks/prepare-commit-msg)
+  --remote-name REMOTE_NAME
+                        Remote name used by `git push`.
+  --remote-url REMOTE_URL
+                        Remote url used by `git push`.
+  --checkout-type CHECKOUT_TYPE
+                        Indicates whether the checkout was a branch checkout
+                        (changing branches, flag=1) or a file checkout
+                        (retrieving a file from the index, flag=0).
+  --is-squash-merge IS_SQUASH_MERGE
+                        During a post-merge hook, indicates whether the merge
+                        was a squash merge
+  --rewrite-command REWRITE_COMMAND
+                        During a post-rewrite hook, specifies the command that
+                        invoked the rewrite
+########### uninstall
+usage: pre-commit uninstall [-h] [--color {auto,always,never}] [-c CONFIG]
+                            [-t {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  -t {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}, --hook-type {commit-msg,post-checkout,post-commit,post-merge,post-rewrite,pre-commit,pre-merge-commit,pre-push,pre-rebase,prepare-commit-msg}
+########### validate-config
+usage: pre-commit validate-config [-h] [--color {auto,always,never}]
+                                  [filenames ...]
+
+positional arguments:
+  filenames
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+########### validate-manifest
+usage: pre-commit validate-manifest [-h] [--color {auto,always,never}]
+                                    [filenames ...]
+
+positional arguments:
+  filenames
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+########### help
+usage: pre-commit help [-h] [help_cmd]
+
+positional arguments:
+  help_cmd    Command to show help for.
+
+optional arguments:
+  -h, --help  show this help message and exit
+########### hook-impl
+usage: pre-commit hook-impl [-h] [--color {auto,always,never}] [-c CONFIG]
+                            [--hook-type HOOK_TYPE] [--hook-dir HOOK_DIR]
+                            [--skip-on-missing-config]
+                            ...
+
+positional arguments:
+  rest
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --color {auto,always,never}
+                        Whether to use color in output. Defaults to `auto`.
+  -c CONFIG, --config CONFIG
+                        Path to alternate config file
+  --hook-type HOOK_TYPE
+  --hook-dir HOOK_DIR
+  --skip-on-missing-config

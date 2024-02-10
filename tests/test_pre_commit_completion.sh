@@ -2,7 +2,6 @@
 # test_pre_commit_completion.sh
 # shellcheck disable=2034,1090
 
-
 # Source the completion script for testing
 # # shellcheck source=../pre-commit.bash
 source "$(realpath "$(dirname "$0")/../pre-commit.bash")"
