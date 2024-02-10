@@ -211,7 +211,7 @@ _pre_commit_completion() {
 
                 elif [[ "${prev_arg}" == "--files" ]]; then
                     propose_files=1
-                elif [[ "${prev_arg}" == *":"* ]]; then
+                elif [[ "${prev_arg}" == *":"* ]] || [[ -r "${prev_arg}"/.pre-commit-hooks.yaml ]] ; then
                     # Might be a link, suppose repo is provided
                     has_repo=1
                 fi
@@ -225,6 +225,11 @@ _pre_commit_completion() {
             fi
 
             if [ "${cmd_arg}" == "try-repo" ] && [ "${has_repo}" != "1" ] ; then
+                # Completion for directories (try-repo is likely local)
+                COMPREPLY=( $(compgen -d -- "${cur}") )
+                if [ ! -r "${cur}/.pre-commit-hooks.yaml" ]; then
+                    COMPREPLY=( $(compgen -d -- "${cur}") )
+                fi
                 return 0
             fi
 
