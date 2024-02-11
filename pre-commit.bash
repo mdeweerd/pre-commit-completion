@@ -66,6 +66,7 @@ _pre_commit_completion() {
 
     local color_options="auto always never"
     local stages="commit-msg post-checkout post-commit post-merge post-rewrite pre-commit pre-merge-commit pre-push pre-rebase prepare-commit-msg manual"
+    local stages_hook_impl="commit-msg post-checkout post-commit post-merge post-rewrite pre-commit pre-merge-commit pre-push pre-rebase prepare-commit-msg"
     local options
     case "${prev}" in
         --color)
@@ -76,7 +77,11 @@ _pre_commit_completion() {
             options="${config_files}"
             ;;
         -t|--hook-type|--hook-stage)
-            options="${stages}"
+            if [ "$cmd_arg" != "hook-impl" ] ; then
+                options="${stages}"
+            else
+                options="${stages_hook_impl}"
+            fi
             ;;
         --remote-branch)
             options="$(git branch -r --format "%(refname:lstrip=2)")"
