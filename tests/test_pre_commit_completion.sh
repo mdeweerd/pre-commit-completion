@@ -6,6 +6,8 @@
 # # shellcheck source=../pre-commit.bash
 source "$(realpath "$(dirname "$0")/../pre-commit.bash")"
 
+# Maybe consider https://gist.github.com/justagist/1cac130436142540674a78c0eba6bee7
+
 _init_completion() {
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -36,5 +38,14 @@ test_pre_commit_global_options_completion() {
     COMP_CWORD=1
     _pre_commit_completion
     assert_matches "-h --help -V --version autoupdate clean gc init-templatedir install install-hooks migrate-config run sample-config try-repo uninstall validate-config validate-manifest help hook-impl" "${COMPREPLY[*]}" "-h"
+    # Add more assertions for other global options
+}
+
+xtest_pre_commit_autoupdate_options_completion() {
+    # Test completion for global options
+    COMP_WORDS=("pre-commit" "autoupdate" "--repo")
+    COMP_CWORD=3
+    _pre_commit_completion
+    assert_matches "https://..." "${COMPREPLY[*]}" "-h"
     # Add more assertions for other global options
 }
