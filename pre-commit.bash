@@ -5,9 +5,9 @@
 
 _pre_commit_completion() {
     # shellcheck disable=2034
-    local cur prev prev2 words cword
+    local cur prev prev2 words cword split
 
-    _init_completion || return
+    _init_completion -n : || return
 
     local commands="autoupdate clean gc init-templatedir install install-hooks migrate-config run sample-config try-repo uninstall validate-config validate-manifest help hook-impl"
     local global_opts="-h --help -V --version"
@@ -40,6 +40,21 @@ _pre_commit_completion() {
         echo "${hooks}"
     }
 
+    # Function to find repos in configuration file
+    _find_repos() {
+        local config_file repos quotes
+        config_file=$(_find_pre_commit_config "$(pwd)")
+        [ $? -ne 0 ] && return 1
+
+        if [ -n "${config_file}" ]; then
+            quotes="\"'"  # To avoid beautysh incompatibility
+            repos=$(grep -E '^\s+(-\s+)?(repo):\s+[^ ]+' "${config_file}" | sed -E 's/^\s+(-\s+)?\S+:\s+'"[$quotes]?([^$quotes: ]+)"'/\2/')
+        else
+            repos=""
+        fi
+        echo "${repos}"
+    }
+
     case "${prev2}" in
         pre-commit)
             COMPREPLY=( $(compgen -W "${global_opts}" -- "${cur}") )
@@ -68,6 +83,7 @@ _pre_commit_completion() {
     local stages="commit-msg post-checkout post-commit post-merge post-rewrite pre-commit pre-merge-commit pre-push pre-rebase prepare-commit-msg manual"
     local stages_hook_impl="commit-msg post-checkout post-commit post-merge post-rewrite pre-commit pre-merge-commit pre-push pre-rebase prepare-commit-msg"
     local options
+
     case "${prev}" in
         --color)
             options="${color_options}"
@@ -121,12 +137,16 @@ _pre_commit_completion() {
             ;;
     esac
 
+    #local current_word="${COMP_WORDS[COMP_CWORD]}"
+    #echo "cur:'$cur' prev:'$prev' prev2:'$prev2' cword:'$cword' curword:'$current_word' words:'$words'"
+
     if [ "${options}" != "" ] ; then
+        echo "compgen -W '${options}' -- '${cur}'"
         COMPREPLY=( $(compgen -W "${options}" -- "${cur}") )
         return 0
     fi
 
-    local autoupdate_options="--help --color -c --bleeding-edge --freeze -repo -j"
+    local autoupdate_options="--help --color -c --bleeding-edge --freeze --repo -j"
     local clean_options="--help --color"
     local gc_options="--help --color"
     local install_options="--help --hook-type --color -c --config -f --overwrite --install-hooks --allow-missing-config -t --hook-type"
@@ -194,16 +214,16 @@ _pre_commit_completion() {
 
 
     case "${cmd_arg}" in
-        try-repo|run)
+        try-repo|run|autoupdate)
             # Check for --files or hooks in the preceding arguments
             local hooks prev_arg exclude_git propose_files repo_files hooksError has_repo
             hooks=$(_find_hooks)
             hooksError=$?
             hooks_spaces=$(echo "$hooks" | tr '\n' ' ')
             propose_files=0
+            propose_repos=0
             exclude_git=()
             for prev_arg in "${words[@]}"; do
-
                 [ "${prev_arg}" == "" ] && continue
 
                 if [ "$propose_files" != "0" ] ; then
@@ -216,6 +236,8 @@ _pre_commit_completion() {
 
                 elif [[ "${prev_arg}" == "--files" ]]; then
                     propose_files=1
+                elif [[ "${prev_arg}" == "--repo" ]]; then
+                    propose_repos=1
                 elif [[ "${prev_arg}" == *":"* ]] || [[ -r "${prev_arg}"/.pre-commit-hooks.yaml ]] ; then
                     # Might be a link, suppose repo is provided
                     has_repo=1
@@ -226,6 +248,16 @@ _pre_commit_completion() {
                 # Completion for files in the repository
                 repo_files=$(git ls-files ":${cur}*" "${exclude_git[@]}" 2>/dev/null)
                 COMPREPLY=( $(compgen -W "${repo_files}" -- "${cur}") )
+                return 0
+            fi
+
+            if [ "$propose_repos" != "0" ] ; then
+                repos=$(_find_repos)
+                # EOL to space
+                repos=$(echo "$repos" | tr '\n' ' ')
+                COMPREPLY=( $(compgen -W "${repos}" -- "${cur}") )
+                __ltrim_colon_completions "$cur"
+
                 return 0
             fi
 
@@ -246,7 +278,7 @@ _pre_commit_completion() {
 
             return 0
             ;;
-        autoupdate|clean|gc|migrate-config|sample-config|help|hook-impl)
+        clean|gc|migrate-config|sample-config|help|hook-impl)
             COMPREPLY=( $(compgen -W "${command_opts}" -- "${cur}") )
             return 0
             ;;
