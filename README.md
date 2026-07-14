@@ -1,5 +1,9 @@
 # Bash completion for pre-commit
 
+Provides command line completion for pre-commit.
+
+This is a "pure" bash shell implementation requiring only `grep` and `sed`.
+
 ## Setup
 
 Get `pre-commit.bash`.
@@ -28,6 +32,14 @@ Source it into your shell (`.bashrc` or `.bash_profile`):
 
 Debugging can be facilitated by calling `set -x`.\
 To disable the trace, you can do the opposite: `set +x`.
+
+## "Limitations"
+
+- The hooks are extracted from the pre-commit configuration through a lookup of lines with `id:` or `alias:`.  There is no actual decoding of yaml.  This increases speed and it limits the need for extra tools.
+
+## Other
+
+- (Takishima/pre-commit-completion)[https://github.com/Takishima/pre-commit-completion] is another project that provides bash completion.  It is based on a compiled C program.
 
 ## LICENSE
 

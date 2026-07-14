@@ -18,7 +18,7 @@ jobs:
         with:
           cache: pip
           python-version: 3.12.1
-      - run: python -m pip install pre-commit regex
+      - run: python -m pip install pre-commit
       - uses: actions/cache/restore@v4
         with:
           path: |
@@ -35,7 +35,7 @@ jobs:
           pre-commit gc
           pre-commit run --show-diff-on-failure --color=always --all-files | tee ${RAW_LOG}
       - name: Convert Raw Log to annotations
-        uses: mdeweerd/logToCheckStyle@v2024.2.3
+        uses: mdeweerd/logToCheckStyle@v2024.2.9
         if: ${{ failure() }}
         with:
           in: ${{ env.RAW_LOG }}

@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0
     hooks:
       - id: no-commit-to-branch
         args: [--branch, main]
@@ -20,7 +20,7 @@ repos:
 
   # Beautify shell scripts
   - repo: https://github.com/lovesegfault/beautysh.git
-    rev: v6.2.1
+    rev: 885128fe2600889194c69fa19326cf55a3462777  # v6.4.3
     hooks:
       - id: beautysh
 
@@ -35,7 +35,7 @@ repos:
 
   # Prettier (format code, only for non common files)
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.3
+    rev: f12edd9c7be1c20cfa42420fd0e6df71e42b51ea  # v4.0.0-alpha.8
     hooks:
       - id: prettier
         stages: [manual]
@@ -47,7 +47,7 @@ repos:
 
   # Check format of yaml files
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.33.0
+    rev: cba56bcde1fdd01c1deb3f945e69764c291a6530  # v1.38.0
     hooks:
       - id: yamllint
         args:
@@ -57,7 +57,7 @@ repos:
 
   # Execute codespell to fix typo errors (setup of codespell into dev/tools/codespell/)
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: 2ccb47ff45ad361a21071a7eedda4c37e6ae8c5a  # v2.4.2
     hooks:
       - id: codespell
         exclude_types: [image]
@@ -65,7 +65,7 @@ repos:
 
   # Check some shell scripts
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.6
+    rev: 745eface02aef23e168a8afb6b5737818efbea95  # v0.11.0.1
     hooks:
       - id: shellcheck
         args: [-W, "100"]
